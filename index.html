@@ -157,6 +157,7 @@
         const SunIcon = () => `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12h2.25m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25c0 1.31.934 2.385 2.148 2.493a2.247 2.247 0 0 1 .102-.003A2.25 2.25 0 0 0 12 12Z" /></svg>`;
         const MoonIcon = () => `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>`;
         const CogIcon = () => `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-1.007 1.11-.962l5.042.504c.55.045.994.51.952 1.062-.044.55-.506 1.006-.952 1.062l-5.042-.504c-.55-.045-1.016-.512-1.016-1.062Zm3.25 1.087c-.09-.542.388-1.036.932-1.073l5.042-.504c.544-.037 1.033.391 1.073.936.04.544-.385 1.036-.932 1.073l-5.042.504c-.545.037-1.033-.391-1.073-.936ZM12 9.75V6.375m0 3.375c-.39.105-.766.268-1.115.485m1.115-.485c.39-.105.766-.268 1.115-.485m-1.115.485V12m0 0c-.39.105-.766.268-1.115.485m1.115-.485c.39-.105.766-.268 1.115-.485m0 0V14.625m0-2.625a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0ZM12 18.75V15.375m0 3.375c.39-.105.766-.268 1.115-.485m-1.115.485c-.39.105-.766-.268-1.115-.485M9.594 15.94c.09.542.56 1.007 1.11-.962l5.042-.504c.55-.045.994.51.952-1.062-.044-.55-.506 1.006-.952-1.062l-5.042.504c-.55-.045-1.016.512-1.016-1.062Zm3.25-1.087c-.09.542.388-1.036.932-1.073l5.042-.504c.544-.037 1.033.391 1.073.936.04.544-.385 1.036-.932 1.073l-5.042.504c-.545.037-1.033-.391-1.073-.936Z" /></svg>`;
+        const CheckIcon = () => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" /></svg>`;
 
         // --- Theme Management ---
         function applyTheme() {
@@ -348,8 +349,8 @@
                 let nextReviewDate = progress.nextReview instanceof Date ? progress.nextReview : new Date(progress.nextReview);
                 
                 if (isNaN(nextReviewDate.getTime())) {
-                     console.warn(`Invalid nextReview date for card ${card.id}:`, progress.nextReview);
-                     return true;
+                       console.warn(`Invalid nextReview date for card ${card.id}:`, progress.nextReview);
+                       return true;
                 }
 
                 nextReviewDate.setHours(0,0,0,0);
@@ -470,9 +471,24 @@
                 if (isDue) dueToday++;
             });
 
+            const learnedCards = known + kinda + unknown;
+            const overallProgressPercent = totalFidelCount > 0 ? (learnedCards / totalFidelCount) * 100 : 0;
+
             appMainEl.innerHTML = `
                 <div class="w-full max-w-4xl mx-auto p-6 rounded-xl">
-                    <h2 class="text-3xl font-bold mb-8 text-center ${themeClass('text-brand-blue', 'text-purple-300')}">Welcome to Temar!</h2>
+                    <h2 class="text-3xl font-bold mb-6 text-center ${themeClass('text-brand-blue', 'text-purple-300')}">Welcome to Temar!</h2>
+
+                     <div class="w-full max-w-2xl mx-auto mb-8 p-4 rounded-lg shadow-lg ${themeClass('bg-white', 'bg-slate-800/50')}">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-lg font-semibold ${themeClass('text-brand-blue', 'text-gray-200')}">Overall Progress</h3>
+                            <span class="text-sm font-mono font-semibold ${themeClass('text-brand-blue/80', 'text-gray-400')}">${learnedCards} / ${totalFidelCount} Learned</span>
+                        </div>
+                        <div class="w-full rounded-full h-4 ${themeClass('bg-brand-blue/10', 'bg-slate-700')}">
+                            <div class="h-4 rounded-full transition-all duration-500 ease-out ${themeClass('bg-gradient-to-r from-brand-yellow to-yellow-400', 'bg-gradient-to-r from-pink-500 to-purple-500')}" style="width: ${overallProgressPercent}%"></div>
+                        </div>
+                    </div>
+
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         
                         <div class="p-6 rounded-lg shadow-lg flex flex-col items-center justify-center text-center ${themeClass('bg-white border border-brand-blue/10', 'bg-slate-800')}">
@@ -480,9 +496,9 @@
                             <p class="mb-4 ${themeClass('text-brand-blue/80', 'text-gray-400')}">Learn the alphabet one family at a time in structured lessons.</p>
                             <button id="start-learn-mode-btn"
                                 class="w-full py-3 px-6 rounded-lg text-lg font-semibold shadow-md transition-colors
-                                        ${themeClass('bg-brand-blue hover:bg-opacity-90 text-white focus:ring-offset-white',
-                                                     'bg-blue-500 hover:bg-blue-600 text-white focus:ring-offset-slate-800')}
-                                        focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2">
+                                       ${themeClass('bg-brand-blue hover:bg-opacity-90 text-white focus:ring-offset-white',
+                                                      'bg-blue-500 hover:bg-blue-600 text-white focus:ring-offset-slate-800')}
+                                       focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2">
                                 Learn from Scratch
                             </button>
                         </div>
@@ -492,7 +508,7 @@
                              <p class="mb-4 ${themeClass('text-brand-blue/80', 'text-gray-400')}">Use spaced repetition to practice the characters you've learned.</p>
                              
                             <div class="text-left w-full mb-4 px-4 text-sm">
-                                <h4 class="font-semibold mb-1 ${themeClass('text-brand-blue', 'text-gray-300')}">Current Progress:</h4>
+                                <h4 class="font-semibold mb-1 ${themeClass('text-brand-blue', 'text-gray-300')}">Due Today Breakdown:</h4>
                                 <div class="grid grid-cols-2 gap-x-4">
                                     <p class="text-green-600 dark:text-green-400">Known: ${known}</p>
                                     <p class="text-yellow-600 dark:text-yellow-400">Kinda Knew: ${kinda}</p>
@@ -504,9 +520,9 @@
                             <p class="text-3xl font-bold mb-3 ${themeClass('text-brand-yellow', 'text-pink-400')}">${dueToday} cards due</p>
                             <button id="start-review-btn"
                                 class="w-full py-3 px-6 rounded-lg text-lg font-semibold shadow-md transition-colors
-                                        ${themeClass('bg-brand-yellow hover:bg-opacity-90 text-brand-blue font-bold focus:ring-offset-white',
-                                                     'bg-pink-500 hover:bg-pink-600 text-white focus:ring-offset-slate-700')}
-                                        focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:ring-offset-2">
+                                       ${themeClass('bg-brand-yellow hover:bg-opacity-90 text-brand-blue font-bold focus:ring-offset-white',
+                                                      'bg-pink-500 hover:bg-pink-600 text-white focus:ring-offset-slate-700')}
+                                       focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:ring-offset-2">
                                 Review Due Cards
                             </button>
                         </div>
@@ -547,6 +563,8 @@
             
             const currentCardData = state.reviewDeck[state.currentCardIndex];
             const cardProgress = currentCardData ? state.userProgress[currentCardData.id] : null;
+            const progressPercent = state.reviewDeck.length > 0 ? ((state.currentCardIndex) / state.reviewDeck.length) * 100 : 0;
+
 
             const statusText = cardProgress?.status || 'New';
             let statusColorClass = themeClass('text-cyan-500', 'text-blue-300');
@@ -555,11 +573,20 @@
             else if (cardProgress?.status === 'unknown') statusColorClass = 'text-red-500 dark:text-red-400';
 
             let flashcardHTML = `
-                <div class="w-full max-w-md mb-6 p-4 rounded-lg shadow-lg text-center ${themeClass('bg-white shadow-brand-yellow/20', 'bg-slate-800')}">
-                    <p class="text-xl font-semibold ${themeClass('text-brand-blue', 'text-gray-200')}">
-                        Reviewing Card <span class="${themeClass('text-brand-yellow', 'text-pink-400')}">${state.currentCardIndex + 1}</span> of <span class="${themeClass('text-brand-yellow', 'text-pink-400')}">${state.reviewDeck.length}</span>
-                    </p>
+                <div class="w-full max-w-md mb-6 p-4 rounded-lg shadow-lg ${themeClass('bg-white shadow-brand-yellow/20', 'bg-slate-800')}">
+                    <div class="flex justify-between items-center mb-2">
+                         <p class="text-lg font-semibold ${themeClass('text-brand-blue', 'text-gray-200')}">
+                            Review Progress
+                         </p>
+                         <p class="text-sm font-mono font-semibold ${themeClass('text-brand-blue/80', 'text-gray-400')}">
+                            ${state.currentCardIndex + 1} / ${state.reviewDeck.length}
+                         </p>
+                    </div>
+                    <div class="w-full rounded-full h-2.5 ${themeClass('bg-brand-blue/20', 'bg-slate-600')}">
+                      <div class="h-2.5 rounded-full transition-all duration-300 ease-linear ${themeClass('bg-brand-yellow', 'bg-pink-500')}" style="width: ${progressPercent}%"></div>
+                    </div>
                 </div>
+
                 <div class="w-full max-w-xs sm:max-w-sm h-80 sm:h-96 rounded-xl shadow-2xl p-6 flex flex-col justify-between items-center relative overflow-hidden transition-all duration-300 ease-in-out transform hover:scale-105 ${themeClass('bg-white border border-brand-blue/10', 'bg-slate-700')}">
                     <div class="absolute top-2 right-3 text-xs font-semibold ${themeClass('text-brand-blue', 'text-purple-300')}">${currentCardData.familyName}</div>
                     ${state.isCardFlipped ? `
@@ -593,15 +620,15 @@
                 flashcardHTML += `
                     <div class="grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
                         <button id="review-unknown-btn" class="w-full py-2 px-3 sm:py-3 sm:px-4 text-white rounded-lg text-base sm:text-lg font-semibold shadow-md transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2
-                                                             ${themeClass('bg-red-500 hover:bg-red-600 focus:ring-offset-white', 'bg-red-500 hover:bg-red-600 focus:ring-offset-slate-700')}">
+                                                         ${themeClass('bg-red-500 hover:bg-red-600 focus:ring-offset-white', 'bg-red-500 hover:bg-red-600 focus:ring-offset-slate-700')}">
                             Didn't Know
                         </button>
                         <button id="review-kinda-btn" class="w-full py-2 px-3 sm:py-3 sm:px-4 text-white rounded-lg text-base sm:text-lg font-semibold shadow-md transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2
-                                                             ${themeClass('bg-yellow-500 hover:bg-yellow-600 focus:ring-offset-white', 'bg-yellow-500 hover:bg-yellow-600 focus:ring-offset-slate-700')}">
+                                                        ${themeClass('bg-yellow-500 hover:bg-yellow-600 focus:ring-offset-white', 'bg-yellow-500 hover:bg-yellow-600 focus:ring-offset-slate-700')}">
                             Kinda Knew
                         </button>
                         <button id="review-known-btn" class="w-full py-2 px-3 sm:py-3 sm:px-4 text-white rounded-lg text-base sm:text-lg font-semibold shadow-md transition-colors focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2
-                                                            ${themeClass('bg-green-500 hover:bg-green-600 focus:ring-offset-white', 'bg-green-500 hover:bg-green-600 focus:ring-offset-slate-700')}">
+                                                       ${themeClass('bg-green-500 hover:bg-green-600 focus:ring-offset-white', 'bg-green-500 hover:bg-green-600 focus:ring-offset-slate-700')}">
                             Knew It!
                         </button>
                     </div>
@@ -641,9 +668,22 @@
 
             const familyGrid = document.getElementById('family-grid');
             fidelFamilies.forEach(family => {
+                const familyCompletionKey = `family_${family.name}_completed`;
+                const isCompleted = state.userProgress[familyCompletionKey];
+
                 const button = document.createElement('button');
-                button.className = `p-4 rounded-lg shadow-lg flex items-center justify-center aspect-square transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 ${themeClass('bg-white border border-brand-blue/10 text-brand-blue hover:bg-brand-yellow/20 focus:ring-brand-yellow focus:ring-offset-white', 'bg-slate-800 text-white hover:bg-slate-700 focus:ring-purple-400 focus:ring-offset-slate-900')}`;
-                button.innerHTML = `<span class="text-4xl font-amharic">${family.base}</span>`;
+                button.className = `p-4 rounded-lg shadow-lg flex items-center justify-center aspect-square transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 relative ${themeClass('bg-white border border-brand-blue/10 text-brand-blue hover:bg-brand-yellow/20 focus:ring-brand-yellow focus:ring-offset-white', 'bg-slate-800 text-white hover:bg-slate-700 focus:ring-purple-400 focus:ring-offset-slate-900')}`;
+                
+                let buttonContent = `<span class="text-4xl font-amharic">${family.base}</span>`;
+                if (isCompleted) {
+                    buttonContent += `
+                        <div class="absolute top-1 right-1 text-green-500 dark:text-green-400">
+                            ${CheckIcon()}
+                        </div>
+                    `;
+                }
+                button.innerHTML = buttonContent;
+
                 button.addEventListener('click', () => {
                     state.currentView = 'learnOrder';
                     state.learnFamily = family;
@@ -666,6 +706,7 @@
 
             const char = currentFamily.forms[state.learnOrderIndex];
             const sound = currentFamily.sounds[state.learnOrderIndex];
+            const familyCompletionKey = `family_${currentFamily.name}_completed`;
             
             let learnHTML = `
                 <div class="w-full max-w-md mb-6 p-4 rounded-lg shadow-lg text-center ${themeClass('bg-white shadow-brand-yellow/20', 'bg-slate-800')}">
@@ -674,7 +715,7 @@
                     </p>
                 </div>
                 <div class="w-full max-w-xs sm:max-w-sm h-80 sm:h-96 rounded-xl shadow-2xl p-6 flex flex-col justify-between items-center relative overflow-hidden ${themeClass('bg-white border border-brand-blue/10', 'bg-slate-700')}">
-                     <div class="absolute top-2 right-3 text-xs font-semibold ${themeClass('text-brand-blue', 'text-purple-300')}">${currentFamily.name}</div>
+                         <div class="absolute top-2 right-3 text-xs font-semibold ${themeClass('text-brand-blue', 'text-purple-300')}">${currentFamily.name}</div>
                     <div class="flex-grow flex flex-col justify-center items-center text-center w-full">
             `;
             if (!state.isCardFlipped) {
@@ -692,10 +733,10 @@
             
             if (!state.isCardFlipped) {
                 learnHTML += `
-                     <button id="show-answer-btn-learn" class="w-full py-3 px-4 rounded-lg text-lg font-semibold shadow-md transition-colors focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:ring-offset-2
-                                                 ${themeClass('bg-brand-yellow hover:bg-opacity-90 text-brand-blue font-bold focus:ring-offset-white', 'bg-pink-500 hover:bg-pink-600 text-white focus:ring-offset-slate-700')}">
-                        Show Pronunciation
-                    </button>
+                         <button id="show-answer-btn-learn" class="w-full py-3 px-4 rounded-lg text-lg font-semibold shadow-md transition-colors focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:ring-offset-2
+                                                      ${themeClass('bg-brand-yellow hover:bg-opacity-90 text-brand-blue font-bold focus:ring-offset-white', 'bg-pink-500 hover:bg-pink-600 text-white focus:ring-offset-slate-700')}">
+                            Show Pronunciation
+                        </button>
                 `;
             } else {
                 learnHTML += `
@@ -715,6 +756,13 @@
             
             if(document.getElementById('show-answer-btn-learn')){
                 document.getElementById('show-answer-btn-learn').addEventListener('click', () => {
+                    // If this is the last card of the family, mark the family as completed.
+                    if (state.learnOrderIndex === currentFamily.forms.length - 1) {
+                        if (!state.userProgress[familyCompletionKey]) {
+                            state.userProgress[familyCompletionKey] = true;
+                            saveProgressToLocalStorage(); // Save the new completion status
+                        }
+                    }
                     state.isCardFlipped = true;
                     renderLearnOrderView();
                 });
